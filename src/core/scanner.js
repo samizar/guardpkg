@@ -199,7 +199,7 @@ class Scanner {
   }
 
   checkSuspiciousScripts(metadata) {
-    const scripts = metadata.versions?.[metadata['dist-tags']?.latest]?.scripts || {};
+    const scripts = metadata.scripts || {};
     const suspiciousCommands = [
       'curl',
       'wget',
@@ -508,18 +508,6 @@ class Scanner {
 
 
   
-  checkSuspiciousScripts(scripts) {
-    const suspiciousPatterns = [
-      /curl\s+|wget\s+/,
-      /eval\s*\(/,
-      /require\(['"]child_process['"]\)/,
-      /process\.env/,
-      /https?:\/\//
-    ];
-    return Object.values(scripts).some(script => 
-      suspiciousPatterns.some(pattern => pattern.test(script))
-    );
-  }
 
   checkExecScripts(scripts) {
     const execPatterns = [
@@ -539,11 +527,7 @@ class Scanner {
     return direct + dev + peer;
   }
 
-  calculateLastUpdateAge(modifiedDate) {
-    if (!modifiedDate) return 999; // Default to high age if unknown
-    const days = Math.floor((Date.now() - new Date(modifiedDate).getTime()) / (1000 * 60 * 60 * 24));
-    return days;
-  }
+
 
   processVulnerabilities(data) {
     const vulnerabilities = {
@@ -582,7 +566,44 @@ class Scanner {
     // This is a placeholder - in real implementation, would check against vulnerability database
     return false;
   }
+
+  hasScriptsWithSuspiciousPatterns(scripts) {
+    const suspiciousPatterns = [
+      /curl\s+|wget\s+/,
+      /eval\s*\(/,
+      /require\(['"]child_process['"]\)/,
+      /process\.env/,
+      /https?:\/\//
+    ];
+    return Object.values(scripts).some(script => 
+      suspiciousPatterns.some(pattern => pattern.test(script))
+    );
+  }
+
+  async scanPackageMetrics(packageName, version) {
+    try {
+      const metadata = await this.getPackageMetadata(packageName, version);
+      const scripts = metadata.scripts || {};
+      
+      return {
+        hasSuspiciousScripts: this.checkSuspiciousScripts(metadata).length > 0,
+        hasMinifiedCode: this.checkForMinifiedCode(metadata),
+        dependencyCount: {
+          direct: Object.keys(metadata.dependencies || {}).length,
+          dev: Object.keys(metadata.devDependencies || {}).length,
+          peer: Object.keys(metadata.peerDependencies || {}).length,
+          total: this.calculateTotalDependencies(metadata)
+        },
+        lastUpdateAge: this.calculateLastUpdateAge(metadata),
+        scriptCount: this.countScripts(metadata)
+      };
+    } catch (error) {
+      throw new Error('Failed to fetch package metrics');
+    }
+  }
 }
 module.exports = Scanner;
+
+
 
 

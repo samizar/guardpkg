@@ -152,32 +152,32 @@ describe('CLI Functions', () => {
     });
 
     test('displayDetailedAnalysis shows all sections', () => {
-      const results = {
-        basicInfo: {
-          name: 'test-pkg',
-          version: '1.0.0',
-          author: 'Test Author'
-        },
-        vulnerabilities: {
-          critical: ['CVE-1'],
-          high: ['CVE-2']
-        },
-        securityMetrics: {
-          hasSuspiciousScripts: true,
-          hasLockFile: false
-        },
-        dependencies: {
-          'dep1': '1.0.0',
-          'dep2': '2.0.0'
-        }
-      };
-
-      displayDetailedAnalysis(results);
-      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Detailed Analysis'));
-      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('CVE-1'));
-      expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('dep1'));
-    });
-
+        const results = {
+          basicInfo: {
+            name: 'test-pkg',
+            version: '1.0.0',
+            author: 'Test Author'
+          },
+          vulnerabilities: {
+            critical: ['CVE-1'],
+            high: ['CVE-2']
+          },
+          securityMetrics: {
+            hasSuspiciousScripts: true,
+            hasLockFile: false
+          },
+          dependencies: {
+            'dep1': '1.0.0',
+            'dep2': '2.0.0'
+          }
+        };
+      
+        displayDetailedAnalysis(results);
+        expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Detailed Analysis'));
+        expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Critical: CVE-1'));
+        expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('dep1'));
+      });
+      
     test('formatMetricValue handles all value types', () => {
       expect(formatMetricValue(true)).toContain('Yes');
       expect(formatMetricValue(false)).toContain('No');

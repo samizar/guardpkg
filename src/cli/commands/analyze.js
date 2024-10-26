@@ -1,4 +1,6 @@
-// src/cli/commands/analyze.js
+
+
+/*
 
 const Analyzer = require('../../core/analyzer');
 const chalk = require('chalk');
@@ -142,4 +144,5 @@ module.exports = {
   displaySecurityAnalysis,
   displayDetailedAnalysis
 };
+
 */

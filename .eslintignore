@@ -3,3 +3,4 @@ dist/
 coverage/
 *.test.js
 
+src/cli/commands/analyze.js

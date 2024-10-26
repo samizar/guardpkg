@@ -41,13 +41,33 @@ function displayDetailedAnalysis(results) {
   console.log('\n🔍 Detailed Analysis');
   console.log('─'.repeat(50));
 
+  // Show vulnerabilities (from analyze-command.js implementation)
+  if (results.vulnerabilities?.critical?.length > 0) {
+    console.log('\nCritical Vulnerabilities:');
+    results.vulnerabilities.critical.forEach(vuln => {
+      console.log(`Critical: ${vuln}`);
+    });
+  }
+
+  // Show dependencies (combined from both implementations)
   console.log('\nDependencies:');
   if (results.dependencies) {
     Object.entries(results.dependencies).forEach(([name, version]) => {
       console.log(`- ${name}@${typeof version === 'string' ? version : version.version}`);
     });
   }
+  if (results.securityMetrics?.dependencyCount) {
+    const deps = results.securityMetrics.dependencyCount;
+    console.log(`Total: ${deps.total} (${deps.direct} direct, ${deps.dev} dev)`);
+  }
 
+  // Show suspicious patterns (from analyze-command.js implementation)
+  if (results.suspiciousPatterns?.length > 0) {
+    console.log('\nSuspicious Patterns:');
+    results.suspiciousPatterns.forEach(pattern => console.log(`- ${pattern}`));
+  }
+
+  // Show security metrics (from original display.js implementation)
   console.log('\nSecurity Metrics:');
   if (results.securityMetrics) {
     Object.entries(results.securityMetrics).forEach(([key, value]) => {

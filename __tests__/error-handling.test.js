@@ -24,7 +24,8 @@ describe('Error Handling', () => {
     axios.get.mockRejectedValue(timeoutError);
 
     await expect(scanner.scanPackage('timeout-pkg'))
-      .rejects.toThrow('Network error');
+    .rejects.toThrow('Failed to analyze package: ETIMEDOUT');
+
   });
 
   test('handles rate limiting', async () => {
@@ -32,7 +33,8 @@ describe('Error Handling', () => {
     axios.get.mockRejectedValue(rateLimitError);
 
     await expect(scanner.scanPackage('limited-pkg'))
-      .rejects.toThrow('Rate limited');
+    .rejects.toThrow('Failed to analyze package: 429 Too Many Requests');
+
   });
 
   test('handles invalid configurations', async () => {

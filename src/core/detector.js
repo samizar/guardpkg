@@ -3,6 +3,7 @@ const path = require('path');
 const crypto = require('crypto');
 const { execSync } = require('child_process');
 const axios = require('axios');
+const os = require('os');
 
 class Detector {
   constructor() {
@@ -162,17 +163,31 @@ class Detector {
   }
 
   async analyzeTarball(packageName, version) {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'guardpkg-'));
+    const results = {
+      malwareDetected: false,
+      suspiciousPatterns: [],
+      risks: [],
+      score: 100
+    };
+
     try {
-      return {
-        malwareDetected: false,
-        suspiciousPatterns: [],
-        risks: [],
-        score: 100
-      };
+      const metadata = await this.getPackageMetadata(packageName, version);
+      if (this.isKnownMalware(metadata.dist?.shasum)) {
+        results.malwareDetected = true;
+        results.score = 0;
+        return results;
+      }
+
+      await this.performDeepAnalysis(tempDir, results);
+      return results;
     } catch (error) {
       throw new Error(`Analysis failed: ${error.message}`);
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
     }
   }
+      
 
   async performDeepAnalysis(directory, results) {
     try {

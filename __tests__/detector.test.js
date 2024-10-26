@@ -9,8 +9,17 @@ describe('Malware Detector', () => {
   let detector;
 
   beforeEach(() => {
-    detector = new Detector();
     jest.clearAllMocks();
+    detector = new Detector();
+    // Mock required methods
+    detector.getPackageMetadata = jest.fn().mockResolvedValue({
+      name: 'test-package',
+      version: '1.0.0',
+      dependencies: {
+        'safe-pkg': '1.0.0',
+        'vuln-pkg': '1.0.0'
+      }
+    });
   });
 
   describe('deep analysis', () => {

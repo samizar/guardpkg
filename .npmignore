@@ -1,0 +1,52 @@
+# Development files
+tests/
+.github/
+.git/
+.gitignore
+.eslintrc
+.prettierrc
+.env
+.DS_Store
+
+# Build outputs
+dist/
+coverage/
+.temp-analysis/
+
+# Logs
+*.log
+
+# Source control
+.git
+.gitignore
+
+# IDE specific files
+.vscode/
+.idea/
+
+# Test files
+__tests__/
+*.test.js
+*.spec.js
+
+# Documentation files (optional, depending on if you want these in your package)
+docs/
+CONTRIBUTING.md
+
+# Test configuration
+jest.config.js
+.nyc_output/
+
+# npm specific
+.npmrc
+.npm/
+*.tgz
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Optional eslint cache
+.eslintcache
